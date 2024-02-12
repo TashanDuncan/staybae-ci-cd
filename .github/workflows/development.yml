@@ -78,7 +78,7 @@ jobs:
       repository-projects: write
     outputs:
       CURRENT_TAG: ${{ steps.build_version.outputs.current_tag }}
-      steps:
+    steps:
         - name: Checkout code
           uses: actions/checkout@v3
         - name: Get current tag
@@ -87,7 +87,7 @@ jobs:
         - name: Install Node ${{ matrix.node-version }}
           uses: actions/setup-node@v2
           with:
-          node-version: ${{ matrix.node-version }}
+            node-version: ${{ matrix.node-version }}
         - run: sed -i 's/%%APP_VERSION%%/${{steps.build_version.outputs.current_tag}}-wip/g' src/config/AppVersion.tsx
         - run: npm ci
         - run: npm run build
