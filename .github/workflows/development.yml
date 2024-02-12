@@ -44,7 +44,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm Install
+      - run: npm install
       - run: npm run test:unit
 
   verify:
@@ -61,7 +61,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm Install
+      - run: npm install
       - run: npm -g install snyk
       - run: snyk test
       - run: snyk monitor
