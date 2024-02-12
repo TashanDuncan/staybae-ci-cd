@@ -101,4 +101,4 @@ jobs:
         with:
           context: ./
           push: true
-          tags: TashanDuncan/staybae-ci-cd:${{steps.build_version.outputs.current_tag}}-wip,TashanDuncan/staybae-ci-cd:latest
+          tags: tashanduncan/staybae-ci-cd:${{steps.build_version.outputs.current_tag}}-wip,tashanduncan/staybae-ci-cd:latest
