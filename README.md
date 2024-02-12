@@ -10,4 +10,3 @@ This application uses [MSW](https://mswjs.io/) to render (or mock) the data that
 
 Fixtures and handlers can be found under the `src/__mocks__` folder tree.
 
-SHU IS HERE 2024
