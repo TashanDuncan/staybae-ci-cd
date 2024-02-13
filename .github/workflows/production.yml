@@ -96,7 +96,7 @@ jobs:
       - name: Install Node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
-         node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
       - run: sed -i 's/%%APP_VERSION%%/${{steps.build_version.outputs.new_tag}}/g' src/config/AppVersion.tsx
       - run: npm ci
       - run: npm run build
@@ -106,9 +106,7 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload from the `dist` directory
-          path: "./dist"
+          path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
-        
