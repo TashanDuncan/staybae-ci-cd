@@ -1,10 +1,8 @@
 name: Development Pipeline
-run-name: 'Build ${{ github.ref_name }}'
+run-name: 'Build Production 🚀'
 on:
   push:
-    branches-ignore: [main]
-  pull_request:
-    branches-ignore: [main]
+    branches: [main]
 
 permissions:
   contents: read
@@ -47,25 +45,6 @@ jobs:
       - run: npm install
       - run: npm run test:unit
 
-  # verify:
-  #   strategy:
-  #     matrix:
-  #       node-version: [18.x]
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-  #     - name: Install Node ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #     - run: npm install
-  #     - run: npm -g install snyk
-  #     - run: snyk test
-  #     - run: snyk monitor
-
   build:
     strategy:
       matrix:
@@ -77,18 +56,21 @@ jobs:
       pull-requests: write
       repository-projects: write
     outputs:
-      CURRENT_TAG: ${{ steps.build_version.outputs.current_tag }}
+      NEXT_TAG: ${{ steps.build_version.outputs.new_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Get current tag
         id: build_version
-        run: echo "current_tag=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install Node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: sed -i 's/%%APP_VERSION%%/${{steps.build_version.outputs.current_tag}}-wip/g' src/config/AppVersion.tsx
+      - run: sed -i 's/%%APP_VERSION%%/${{steps.build_version.outputs.new_tag}}/g' src/config/AppVersion.tsx
       - run: npm ci
       - run: npm run build
       - name: Login to DockerHub
@@ -101,4 +83,30 @@ jobs:
         with:
           context: ./
           push: true
-          tags: codingmugen/staybae-ci-cd:${{steps.build_version.outputs.current_tag}}-wip
+          tags: codingmugen/staybae-ci-cd:${{steps.build_version.outputs.new_tag}}
+
+  # Deploy to production
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: [build]
+    steps:
+      - name: Install Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: sed -i 's/%%APP_VERSION%%/${{steps.build_version.outputs.new_tag}}/g' src/config/AppVersion.tsx
+      - run: npm ci
+      - run: npm run build
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v3
+      - name: Upload Staybae
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # Upload from the `dist` directory
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
