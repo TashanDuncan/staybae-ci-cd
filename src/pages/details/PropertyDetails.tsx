@@ -84,7 +84,9 @@ const PropertyDetails = () => {
     <main className="max-w-full px-8 sm:px-16 ml-16 mr-16">
       <div className="flex justify-between ml-4">
         <div className="my-10 w-full md:w-2/3">
-          <div className="text-xl md:text-2xl font-semibold">
+          <div
+            className="text-xl md:text-2xl font-semibold"
+            data-testid={'property-desc'}>
             {data?.description}
           </div>
           <div className="flex flex-row justify-between">
@@ -300,6 +302,20 @@ const PropertyDetails = () => {
       </div>
 
       <hr className="w-full m-6 border-1 border-gray-200 mx-auto" />
+
+      <div className="flex flex-col">
+        <span className="text-xl font-semibold">Description</span>
+        <p className="text-gray-400" data-testid={'property-long-desc'}>
+          {data?.description}, Escape and unplug in our off-grid eco lodge.
+          Nestled in a quiet wooded spinney at the heart of our working farm,
+          our lodge is hand built from sweet chestnut making it one of a kind.
+          With an en-suite compost toilet and heated shower, log burner and gas
+          stove there is no need to venture into the wilds in wintry weather.
+          When it’s sunny, an outdoor kitchen with wood fired oven, and fire pit
+          bbq enhance outdoor living. Tiny shepherds hut, bluebell, is included
+          as a cosy nook/ extra sofa bed.
+        </p>
+      </div>
     </main>
   );
 };
