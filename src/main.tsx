@@ -23,7 +23,7 @@ async function enableMocking() {
   // once the Service Worker is up and ready to intercept requests.
   return worker.start({
     serviceWorker: {
-      url: `${BASE_URL}/mockServiceWorker.js`,
+      url: `${BASE_URL}mockServiceWorker.js`,
     },
     onUnhandledRequest: 'bypass',
   });
